@@ -35,17 +35,16 @@ import ch.qos.logback.access.servlet.Util;
 /**
  * The Access module's internal representation of logging events. When the
  * logging component instance is called in the container to log then a
- * <code>AccessEvent</code> instance is created. This instance is passed
- * around to the different logback components.
+ * <code>AccessEvent</code> instance is created. This instance is passed around
+ * to the different logback components.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class AccessEvent implements Serializable, IAccessEvent {
 
-  
   private static final long serialVersionUID = 866718993618836343L;
-  
+
   private static final String EMPTY = "";
 
   private transient final HttpServletRequest httpRequest;
@@ -77,6 +76,19 @@ public class AccessEvent implements Serializable, IAccessEvent {
    * created.
    */
   private long timeStamp = 0;
+  private long startTime = 0;
+  private long endTime = 0;
+
+  public AccessEvent(HttpServletRequest httpRequest,
+      HttpServletResponse httpResponse, ServerAdapter adapter, long startTime,
+      long endTime) {
+    this.httpRequest = httpRequest;
+    this.httpResponse = httpResponse;
+    this.timeStamp = System.currentTimeMillis();
+    this.serverAdapter = adapter;
+    this.startTime = startTime;
+    this.endTime = endTime;
+  }
 
   public AccessEvent(HttpServletRequest httpRequest,
       HttpServletResponse httpResponse, ServerAdapter adapter) {
@@ -84,11 +96,13 @@ public class AccessEvent implements Serializable, IAccessEvent {
     this.httpResponse = httpResponse;
     this.timeStamp = System.currentTimeMillis();
     this.serverAdapter = adapter;
+    this.startTime = -1;
+    this.endTime = -1;
   }
 
   /**
-   * Returns the underlying HttpServletRequest. After serialization the returned 
-   * value will be null. 
+   * Returns the underlying HttpServletRequest. After serialization the returned
+   * value will be null.
    * 
    * @return
    */
@@ -97,8 +111,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
   }
 
   /**
-   * Returns the underlying HttpServletResponse. After serialization the returned 
-   * value will be null. 
+   * Returns the underlying HttpServletResponse. After serialization the
+   * returned value will be null.
    * 
    * @return
    */
@@ -108,6 +122,14 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
   public long getTimeStamp() {
     return timeStamp;
+  }
+
+  public long getStartTime() {
+    return startTime;
+  }
+
+  public long getEndTime() {
+    return endTime;
   }
 
   public void setTimeStamp(long timeStamp) {
@@ -261,7 +283,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
   public void buildRequestHeaderMap() {
     // according to RFC 2616 header names are case insensitive
     // latest versions of Tomcat return header names in lower-case
-    requestHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    requestHeaderMap = new TreeMap<String, String>(
+        String.CASE_INSENSITIVE_ORDER);
     Enumeration e = httpRequest.getHeaderNames();
     if (e == null) {
       return;

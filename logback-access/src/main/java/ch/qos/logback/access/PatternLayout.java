@@ -31,6 +31,7 @@ import ch.qos.logback.access.pattern.RemoteUserConverter;
 import ch.qos.logback.access.pattern.RequestAttributeConverter;
 import ch.qos.logback.access.pattern.RequestContentConverter;
 import ch.qos.logback.access.pattern.RequestCookieConverter;
+import ch.qos.logback.access.pattern.RequestDurationConverter;
 import ch.qos.logback.access.pattern.RequestHeaderConverter;
 import ch.qos.logback.access.pattern.RequestMethodConverter;
 import ch.qos.logback.access.pattern.RequestParameterConverter;
@@ -63,7 +64,6 @@ import ch.qos.logback.core.pattern.parser.Parser;
 public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
   public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
-  public static final String HEADER_PREFIX = "#logback.access pattern: ";
 
   public static String CLF_PATTERN = "%h %l %u %t \"%r\" %s %b";
   public static String CLF_PATTERN_NAME = "common";
@@ -75,6 +75,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
 
     defaultConverterMap.put("a", RemoteIPAddressConverter.class.getName());
+    defaultConverterMap.put("D", RequestDurationConverter.class.getName());
     defaultConverterMap.put("remoteIP", RemoteIPAddressConverter.class
         .getName());
 
@@ -184,11 +185,5 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
       setPattern(COMBINED_PATTERN);
     }
     super.start();
-  }
-
-
-  @Override
-  protected String getPresentationHeaderPrefix() {
-    return HEADER_PREFIX;
   }
 }

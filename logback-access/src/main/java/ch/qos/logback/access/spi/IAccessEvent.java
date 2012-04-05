@@ -26,9 +26,9 @@ import ch.qos.logback.core.spi.DeferredProcessingAware;
 /**
  * The Access module's internal representation of logging events. When the
  * logging component instance is called in the container to log then a
- * <code>AccessEvent</code> instance is created. This instance is passed
- * around to the different logback components.
- *
+ * <code>AccessEvent</code> instance is created. This instance is passed around
+ * to the different logback components.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * @author J&ouml;rn Huxhorn
@@ -41,15 +41,15 @@ public interface IAccessEvent extends DeferredProcessingAware {
   /**
    * Returns the underlying HttpServletRequest. After serialization the returned
    * value will be null.
-   *
+   * 
    * @return
    */
   HttpServletRequest getRequest();
 
   /**
-   * Returns the underlying HttpServletResponse. After serialization the returned
-   * value will be null.
-   *
+   * Returns the underlying HttpServletResponse. After serialization the
+   * returned value will be null.
+   * 
    * @return
    */
   HttpServletResponse getResponse();
@@ -59,6 +59,10 @@ public interface IAccessEvent extends DeferredProcessingAware {
    * created.
    */
   long getTimeStamp();
+
+  long getStartTime();
+
+  long getEndTime();
 
   String getRequestURI();
 
@@ -89,7 +93,7 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
   /**
    * Attributes are not serialized
-   *
+   * 
    * @param key
    */
   String getAttribute(String key);

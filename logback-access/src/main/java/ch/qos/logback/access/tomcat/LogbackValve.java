@@ -54,8 +54,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * This class is an implementation of tomcat's Valve interface, by extending
  * ValveBase.
  * 
- * <p>
- * For more information on using LogbackValve please refer to the online
+ * <p> For more information on using LogbackValve please refer to the online
  * documentation on <a
  * href="http://logback.qos.ch/access.html#tomcat">logback-acces and tomcat</a>.
  * 
@@ -87,10 +86,9 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   boolean started;
   boolean alreadySetLogbackStatusManager = false;
 
-    // 0 idle threads, 2 maximum threads, no idle waiting
-  ExecutorService executorService = new ThreadPoolExecutor(0, 2,
-          0L, TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<Runnable>());
+  // 0 idle threads, 2 maximum threads, no idle waiting
+  ExecutorService executorService = new ThreadPoolExecutor(0, 2, 0L,
+      TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
   public LogbackValve() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
@@ -155,6 +153,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public void invoke(Request request, Response response) throws IOException,
       ServletException {
 
+    long startTime = System.currentTimeMillis();
+
     try {
 
       if (!alreadySetLogbackStatusManager) {
@@ -171,8 +171,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
       getNext().invoke(request, response);
 
+      long endTime = System.currentTimeMillis();
       TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
-      IAccessEvent accessEvent = new AccessEvent(request, response, adapter);
+      IAccessEvent accessEvent = new AccessEvent(request, response, adapter,
+          startTime, endTime);
 
       if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
         return;
@@ -269,7 +271,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   }
 
   public ExecutorService getExecutorService() {
-    return  executorService;
+    return executorService;
   }
 
   public String getName() {

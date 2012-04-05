@@ -28,7 +28,6 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Response;
 
-
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.IAccessEvent;
@@ -52,73 +51,52 @@ import ch.qos.logback.core.util.OptionHelper;
  * directly to RequestLogImpl and RequestLogImpl uses the same StatusManager as
  * LoggerContext does. It also provides containers for properties. <p> To
  * configure jetty in order to use RequestLogImpl, the following lines must be
- * added to the jetty configuration file, namely <em>etc/jetty.xml</em>:
- * <p/>
- * <pre>
- *    &lt;Ref id=&quot;requestLog&quot;&gt;
- *      &lt;Set name=&quot;requestLog&quot;&gt;
- *        &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *      &lt;/Set&gt;
- *    &lt;/Ref&gt;
- * </pre>
- * <p/>
- * By default, RequestLogImpl looks for a logback configuration file called
- * logback-access.xml, in the same folder where jetty.xml is located, that is
- * <em>etc/logback-access.xml</em>. The logback-access.xml file is slightly
- * different than the usual logback classic configuration file. Most of it is
- * the same: Appenders and Layouts are declared the exact same way. However,
- * loggers elements are not allowed. <p> It is possible to put the logback
- * configuration file anywhere, as long as it's path is specified. Here is
- * another example, with a path to the logback-access.xml file.
- * <p/>
- * <pre>
- *    &lt;Ref id=&quot;requestLog&quot;&gt;
- *      &lt;Set name=&quot;requestLog&quot;&gt;
- *        &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *          &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
- *      &lt;/Set&gt;
- *    &lt;/Ref&gt;
- * </pre>
- * <p/>
- * <p> Here is a sample logback-access.xml file that can be used right away:
- * <p/>
- * <pre>
- *    &lt;configuration&gt;
- *      &lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
- *        &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
- *          &lt;param name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost %user %requestURL&quot; /&gt;
- *        &lt;/layout&gt;
- *      &lt;/appender&gt;
- *
- *      &lt;appender-ref ref=&quot;STDOUT&quot; /&gt;
- *    &lt;/configuration&gt;
- * </pre>
- * <p/>
- * <p> Another configuration file, using SMTPAppender, could be:
- * <p/>
- * <pre>
- *    &lt;configuration&gt;
- *      &lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.access.net.SMTPAppender&quot;&gt;
- *        &lt;layout class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt;
- *          &lt;param name=&quot;pattern&quot; value=&quot;%remoteIP [%date] %requestURL %statusCode %bytesSent&quot; /&gt;
- *        &lt;/layout&gt;
- *        &lt;param name=&quot;From&quot; value=&quot;sender@domaine.org&quot; /&gt;
- *        &lt;param name=&quot;SMTPHost&quot; value=&quot;mail.domain.org&quot; /&gt;
- *         &lt;param name=&quot;Subject&quot; value=&quot;Last Event: %statusCode %requestURL&quot; /&gt;
- *         &lt;param name=&quot;To&quot; value=&quot;server_admin@domain.org&quot; /&gt;
- *      &lt;/appender&gt;
- *      &lt;appender-ref ref=&quot;SMTP&quot; /&gt;
- *    &lt;/configuration&gt;
- * </pre>
- *
+ * added to the jetty configuration file, namely <em>etc/jetty.xml</em>: <p/>
+ * <pre> &lt;Ref id=&quot;requestLog&quot;&gt; &lt;Set
+ * name=&quot;requestLog&quot;&gt; &lt;New id=&quot;requestLogImpl&quot;
+ * class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ * &lt;/Set&gt; &lt;/Ref&gt; </pre> <p/> By default, RequestLogImpl looks for a
+ * logback configuration file called logback-access.xml, in the same folder
+ * where jetty.xml is located, that is <em>etc/logback-access.xml</em>. The
+ * logback-access.xml file is slightly different than the usual logback classic
+ * configuration file. Most of it is the same: Appenders and Layouts are
+ * declared the exact same way. However, loggers elements are not allowed. <p>
+ * It is possible to put the logback configuration file anywhere, as long as
+ * it's path is specified. Here is another example, with a path to the
+ * logback-access.xml file. <p/> <pre> &lt;Ref id=&quot;requestLog&quot;&gt;
+ * &lt;Set name=&quot;requestLog&quot;&gt; &lt;New id=&quot;requestLogImpl&quot;
+ * class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
+ * &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
+ * &lt;/Set&gt; &lt;/Ref&gt; </pre> <p/> <p> Here is a sample logback-access.xml
+ * file that can be used right away: <p/> <pre> &lt;configuration&gt;
+ * &lt;appender name=&quot;STDOUT&quot;
+ * class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt; &lt;layout
+ * class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; &lt;param
+ * name=&quot;Pattern&quot; value=&quot;%date %server %remoteIP %clientHost
+ * %user %requestURL&quot; /&gt; &lt;/layout&gt; &lt;/appender&gt;
+ * 
+ * &lt;appender-ref ref=&quot;STDOUT&quot; /&gt; &lt;/configuration&gt; </pre>
+ * <p/> <p> Another configuration file, using SMTPAppender, could be: <p/> <pre>
+ * &lt;configuration&gt; &lt;appender name=&quot;SMTP&quot;
+ * class=&quot;ch.qos.logback.access.net.SMTPAppender&quot;&gt; &lt;layout
+ * class=&quot;ch.qos.logback.access.PatternLayout&quot;&gt; &lt;param
+ * name=&quot;pattern&quot; value=&quot;%remoteIP [%date] %requestURL
+ * %statusCode %bytesSent&quot; /&gt; &lt;/layout&gt; &lt;param
+ * name=&quot;From&quot; value=&quot;sender@domaine.org&quot; /&gt; &lt;param
+ * name=&quot;SMTPHost&quot; value=&quot;mail.domain.org&quot; /&gt; &lt;param
+ * name=&quot;Subject&quot; value=&quot;Last Event: %statusCode
+ * %requestURL&quot; /&gt; &lt;param name=&quot;To&quot;
+ * value=&quot;server_admin@domain.org&quot; /&gt; &lt;/appender&gt;
+ * &lt;appender-ref ref=&quot;SMTP&quot; /&gt; &lt;/configuration&gt; </pre>
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class RequestLogImpl extends ContextBase implements RequestLog,
-        AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
+    AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
   public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar
-          + "logback-access.xml";
+      + "logback-access.xml";
 
   AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
   FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
@@ -133,9 +111,9 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
   public void log(Request jettyRequest, Response jettyResponse) {
     JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest,
-            jettyResponse);
+        jettyResponse);
     IAccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
-            adapter);
+        adapter, jettyRequest.getTimeStamp(), System.currentTimeMillis());
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }
@@ -179,12 +157,13 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
     String defaultConfigFile = DEFAULT_CONFIG_FILE;
     if (!OptionHelper.isEmpty(jettyHomeProperty)) {
-      defaultConfigFile = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
+      defaultConfigFile = jettyHomeProperty + File.separatorChar
+          + DEFAULT_CONFIG_FILE;
     } else {
       addInfo("[jetty.home] system property not set.");
     }
     File file = new File(defaultConfigFile);
-    addInfo("Assuming default configuration file ["+defaultConfigFile+"]");
+    addInfo("Assuming default configuration file [" + defaultConfigFile + "]");
     if (!file.exists())
       return null;
     return FileUtil.fileToURL(file);

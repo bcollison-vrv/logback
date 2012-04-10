@@ -86,6 +86,9 @@ public class JettyBasicTest {
     IAccessEvent event = listAppender.list.get(0);
     assertEquals("127.0.0.1", event.getRemoteHost());
     assertEquals("localhost", event.getServerName());
+    assertTrue(event.getStartTime() > 0);
+    assertTrue(event.getEndTime() > 0);
+    assertTrue(event.getEndTime() >= event.getStartTime());
     listAppender.list.clear();
   }
 

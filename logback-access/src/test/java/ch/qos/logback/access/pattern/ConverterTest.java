@@ -185,6 +185,14 @@ public class ConverterTest  {
   }
   
   @Test
+  public void testRequestDurationConverter() {
+    RequestDurationConverter converter = new RequestDurationConverter();
+    converter.start();
+    String result = converter.convert(event);
+    assertEquals(Long.toString(event.getEndTime() - event.getStartTime()), result);
+  }
+  
+  @Test
   public void testStatusCodeConverter() {
     StatusCodeConverter converter = new StatusCodeConverter();
     converter.start();
@@ -194,7 +202,7 @@ public class ConverterTest  {
 
   private IAccessEvent createEvent() {
     DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
-    return new AccessEvent(request, response, dummyAdapter);
+    return new AccessEvent(request, response, dummyAdapter, 1000, 1200);
   }
 
 }
